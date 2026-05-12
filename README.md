@@ -1,3 +1,16 @@
+# proyecto final
+
+## Descripción
+Este proyecto demuestra la implementación de un pipeline de integración continua (CI) y despliegue continuo (CD) utilizando GitHub Actions, Tekton y OpenShift.
+
+## Tecnologías Utilizadas
+* Python / Node.js
+* GitHub Actions (Linting y Testing)
+* Tekton Pipelines
+* Red Hat OpenShift
+
+
+
 # CI/CD Tools and Practices Final Project Template
 
 This repository contains the template to be used for the Final Project for the Coursera course **CI/CD Tools and Practices**.
