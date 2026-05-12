@@ -1,15 +1,25 @@
-#!/usr/bin/env sh
-    set -eu
-    echo "Eliminando todos los archivos de ${WORKSPACE_SOURCE_PATH} ..."
-    # Eliminar cualquier contenido existente del directorio si existe.
-    #
-    # No solo usamos "rm -rf ${WORKSPACE_SOURCE_PATH}" porque ${WORKSPACE_SOURCE_PATH} podría ser "/"
-    # o la raíz de un volumen montado.
-    if [ -d "${WORKSPACE_SOURCE_PATH}" ] ; then
-      # Eliminar archivos y directorios no ocultos
-      rm -rf "${WORKSPACE_SOURCE_PATH:?}"/*
-      # Eliminar archivos y directorios que comienzan con . pero excluyendo ..
-      rm -rf "${WORKSPACE_SOURCE_PATH}"/.[!.]*
-      # Eliminar archivos y directorios que comienzan con .. más cualquier otro carácter
-      rm -rf "${WORKSPACE_SOURCE_PATH}"/..?*
-    fi
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: test-and-cleanup-task
+spec:
+  workspaces:
+    - name: source
+  steps:
+    # FRAGMENTO DE LA TAREA DE NOSE-TEST
+    - name: run-nose-tests
+      image: python:3.9-slim
+      workingDir: $(workspaces.source.path)
+      script: |
+        pip install nose
+        # pip install -r requirements.txt
+        nosetests -v
+        
+    # FRAGMENTO DE LA TAREA DE LIMPIEZA
+    - name: cleanup
+      image: alpine:latest
+      workingDir: $(workspaces.source.path)
+      script: |
+        echo "Ejecutando limpieza de archivos temporales..."
+        rm -rf *.pyc __pycache__ .coverage
+        echo "Limpieza completada."
